@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
-const adminAuth = require("../middlewares/adminAuth"); // 🔒 Protect routes
+const adminAuth = require("../middleware/adminAuth"); // Protect routes
 
 // Admin Login (no auth needed)
 router.post("/admin/login", adminController.loginAdmin);
