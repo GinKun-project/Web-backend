@@ -3,18 +3,17 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
+const app = express(); // Move this BEFORE using `app`
+
 const authRoutes = require("./routes/authRoutes");
-
 const adminRoutes = require("./routes/adminRoutes");
-app.use("/api", adminRoutes);
 
-
-const app = express();
 app.use(cors());
 app.use(express.json()); // parse incoming JSON
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api", adminRoutes); // Moved below app definition
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI, {
