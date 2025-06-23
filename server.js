@@ -5,6 +5,10 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 
+const adminRoutes = require("./routes/adminRoutes");
+app.use("/api", adminRoutes);
+
+
 const app = express();
 app.use(cors());
 app.use(express.json()); // parse incoming JSON
