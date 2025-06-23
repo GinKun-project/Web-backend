@@ -6,11 +6,11 @@ require("dotenv").config();
 async function seedAdmin() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to DB");
+    console.log("✅ Connected to MongoDB");
 
     const existingAdmin = await Admin.findOne({ username: "admin" });
     if (existingAdmin) {
-      console.log("Admin already exists. Skipping.");
+      console.log("⚠️ Admin already exists. Skipping.");
       process.exit(0);
     }
 
@@ -22,10 +22,10 @@ async function seedAdmin() {
     });
 
     await newAdmin.save();
-    console.log("✅ Admin seeded: username=admin, password=admin123");
+    console.log("✅ Admin created: username=admin | password=admin123");
     process.exit(0);
   } catch (err) {
-    console.error("❌ Error seeding admin:", err);
+    console.error("❌ Error seeding admin:", err.message || err);
     process.exit(1);
   }
 }
