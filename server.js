@@ -3,22 +3,23 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-const app = express(); // Move this BEFORE using `app`
+const app = express();
 
+// Middleware (must be before routes)
+app.use(cors());
+app.use(express.json()); // ✅ Important: Parse incoming JSON
+
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
-app.use(cors());
-app.use(express.json()); // parse incoming JSON
-
-// Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", adminRoutes); // Moved below app definition
+app.use("/api", adminRoutes);
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 })
   .then(() => {
     console.log("✅ MongoDB connected");
@@ -27,5 +28,5 @@ mongoose.connect(process.env.MONGO_URI, {
     });
   })
   .catch((err) => {
-    console.error("MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err);
   });

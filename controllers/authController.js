@@ -1,11 +1,13 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken"); // ✅ add this line
+const jwt = require("jsonwebtoken");
 
 // @route   POST /api/auth/signup
 // @desc    Register a new user
 exports.signup = async (req, res) => {
   try {
+    console.log("📦 Signup request body:", req.body); // Debug
+
     const {
       username,
       password,
@@ -16,14 +18,13 @@ exports.signup = async (req, res) => {
       bio,
     } = req.body;
 
-    // Validate required fields
-    if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required." });
+    if (!username || !password || !email) {
+      return res.status(400).json({ message: "Username, email, and password are required." });
     }
 
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: "Username already taken" });
+      return res.status(409).json({ message: "Email already in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,37 +52,38 @@ exports.signup = async (req, res) => {
 // @desc    Login user and return JWT
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    console.log("📦 Login request body:", req.body); // Debug
 
-    console.log("🔐 Login attempt:", username);
-
-    if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required." });
+    // Fallback safety check for body
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({ message: "Invalid request body format" });
     }
 
-    const user = await User.findOne({ username });
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required." });
+    }
+
+    const user = await User.findOne({ email });
     if (!user) {
-      console.log("❌ User not found");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("🔍 Password match:", isMatch);
-
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // ✅ Create JWT token
     const token = jwt.sign(
-      { userId: user._id, username: user.username },
+      { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      { expiresIn: process.env.JWT_EXPIRES_IN || "3d" }
     );
 
     res.status(200).json({
       message: "Login successful",
-      token, // ✅ send token to frontend
+      token,
       user: {
         username: user.username,
         displayName: user.displayName,
