@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 // @desc    Register a new user
 exports.signup = async (req, res) => {
   try {
-    console.log("📦 Signup request body:", req.body); // Debug
+    console.log("📦 Signup request body:", req.body);
 
     const {
       username,
@@ -18,15 +18,18 @@ exports.signup = async (req, res) => {
       bio,
     } = req.body;
 
+    // Basic validation
     if (!username || !password || !email) {
       return res.status(400).json({ message: "Username, email, and password are required." });
     }
 
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already in use" });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -52,11 +55,12 @@ exports.signup = async (req, res) => {
 // @desc    Login user and return JWT
 exports.login = async (req, res) => {
   try {
-    console.log("📦 Login request body:", req.body); // Debug
+    // Log incoming request body
+    console.log("📦 Login request body:", req.body);
 
-    // Fallback safety check for body
+    // Ensure body is parsed
     if (!req.body || typeof req.body !== "object") {
-      return res.status(400).json({ message: "Invalid request body format" });
+      return res.status(400).json({ message: "Invalid request format." });
     }
 
     const { email, password } = req.body;
@@ -77,7 +81,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign(
       { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "default_secret",
       { expiresIn: process.env.JWT_EXPIRES_IN || "3d" }
     );
 

@@ -3,15 +3,15 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const adminAuth = require("../middleware/adminAuth"); // Protect routes
 
-// Admin Login (no auth needed)
+// Admin Login (no auth required)
 router.post("/admin/login", adminController.loginAdmin);
 
-// PLAYER CRUD (protected)
+// PLAYER CRUD (protected routes)
 router.post("/admin/player", adminAuth, adminController.createPlayer);
 router.put("/admin/player/:id", adminAuth, adminController.updatePlayer);
 router.delete("/admin/player/:id", adminAuth, adminController.deletePlayer);
 
-// CHARACTER CRUD (protected)
+// CHARACTER CRUD (protected routes)
 router.post("/admin/character", adminAuth, adminController.createCharacter);
 router.put("/admin/character/:id", adminAuth, adminController.updateCharacter);
 router.delete("/admin/character/:id", adminAuth, adminController.deleteCharacter);
