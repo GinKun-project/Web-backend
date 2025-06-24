@@ -6,7 +6,9 @@ const bcrypt = require("bcrypt");
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret_admin";
 
-// Admin Login
+//
+// ========== ADMIN LOGIN ==========
+//
 exports.loginAdmin = async (req, res) => {
   try {
     const { username, password } = req.body || {};
@@ -26,9 +28,12 @@ exports.loginAdmin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin._id},
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || "1d"  }
+      {
+        id: admin._id,
+        role: "admin",
+      },
+      JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
     );
 
     res.status(200).json({
@@ -42,7 +47,18 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
-// PLAYER CRUD
+//
+// ========== PLAYER CRUD ==========
+//
+exports.getAllPlayers = async (req, res) => {
+  try {
+    const players = await Player.find();
+    res.status(200).json({ success: true, data: players });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 exports.createPlayer = async (req, res) => {
   try {
     const player = new Player(req.body);
@@ -73,7 +89,18 @@ exports.deletePlayer = async (req, res) => {
   }
 };
 
-// CHARACTER CRUD
+//
+// ========== CHARACTER CRUD ==========
+//
+exports.getAllCharacters = async (req, res) => {
+  try {
+    const characters = await Character.find();
+    res.status(200).json({ success: true, data: characters });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 exports.createCharacter = async (req, res) => {
   try {
     const character = new Character(req.body);

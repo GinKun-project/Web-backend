@@ -14,7 +14,7 @@ async function seedAdmin() {
       process.exit(0);
     }
 
-    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const hashedPassword = await bcrypt.hash("password", 10);
 
     const newAdmin = new Admin({
       username: "admin",
@@ -22,7 +22,7 @@ async function seedAdmin() {
     });
 
     await newAdmin.save();
-    console.log("✅ Admin created: username=admin | password=admin123");
+    console.log("✅ Admin created: username=admin | password=password");
     process.exit(0);
   } catch (err) {
     console.error("❌ Error seeding admin:", err.message || err);
