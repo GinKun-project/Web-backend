@@ -26,9 +26,9 @@ exports.loginAdmin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin._id, username: admin.username },
-      JWT_SECRET,
-      { expiresIn: "1h" }
+      { id: admin._id},
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d"  }
     );
 
     res.status(200).json({
