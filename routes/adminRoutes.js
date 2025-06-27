@@ -13,7 +13,7 @@ router.put("/admin/players/:id", adminAuth, adminController.updatePlayer);
 router.delete("/admin/players/:id", adminAuth, adminController.deletePlayer);
 
 // CHARACTER CRUD (protected routes)
-router.get("/admin/characters", adminAuth, adminController.getAllCharacters); // ✅ newly added
+router.get("/admin/characters", adminAuth, adminController.getAllCharacters); 
 router.post("/admin/characters", adminAuth, adminController.createCharacter);
 router.put("/admin/characters/:id", adminAuth, adminController.updateCharacter);
 router.delete("/admin/characters/:id", adminAuth, adminController.deleteCharacter);
