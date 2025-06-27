@@ -103,13 +103,21 @@ exports.getAllCharacters = async (req, res) => {
 
 exports.createCharacter = async (req, res) => {
   try {
-    const character = new Character(req.body);
+    const { name, type } = req.body;
+    if (!name || !type) {
+      return res.status(400).json({ success: false, message: "Name and type are required" });
+    }
+
+    const character = new Character({ name, type });
     await character.save();
+
     res.status(201).json({ success: true, data: character });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error("Character creation error:", err.message);
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
 
 exports.updateCharacter = async (req, res) => {
   try {
