@@ -4,7 +4,10 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
-const adminRoutes = require("./routes/adminRoutes"); // Add admin routes
+const adminRoutes = require("./routes/adminRoutes");
+const achievementRoutes = require("./routes/achievementRoutes");
+const gameStatsRoutes = require("./routes/gameStatsRoutes");
+const settingsRoutes = require("./routes/settingsRoutes");
 
 const app = express();
 
@@ -14,7 +17,10 @@ app.use(express.json()); // Enables reading JSON bodies
 
 // Mount Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", adminRoutes); 
+app.use("/api/admin", adminRoutes);
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/gameStats", gameStatsRoutes);
+app.use("/api/settings", settingsRoutes); 
 
 // Connect to MongoDB and Start Server
 mongoose.connect(process.env.MONGO_URI, {
